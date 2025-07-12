@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CYBER AI ASSISTANT - NEURAL INTERFACE</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/cyberpunk.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/4.19.0/xterm.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/4.19.0/xterm.min.css">
+</head>
+<body>
+    <div class="matrix-bg"></div>
+    <div class="scan-lines"></div>
+    
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">
+                    <span class="glow-text">CYBER</span>
+                    <span class="glow-text-secondary">AI</span>
+                    <span class="glow-text">ASSISTANT</span>
+                </h1>
+                <div class="status-bar">
+                    <div class="status-item">
+                        <span class="status-label">NEURAL LINK:</span>
+                        <span id="connection-status" class="status-value connecting">CONNECTING...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">AI CORE:</span>
+                        <span id="ai-status" class="status-value">CHECKING...</span>
+                    </div>
+                    <div class="status-item">
+                        <span class="status-label">SECURITY:</span>
+                        <span class="status-value online">SECURED</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Interface -->
+        <div class="main-interface">
+            <!-- AI Chat Panel -->
+            <div class="panel ai-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <span class="panel-icon">🤖</span>
+                        AI NEURAL INTERFACE
+                    </h2>
+                    <div class="panel-controls">
+                        <button id="clear-chat" class="control-btn">CLEAR</button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div id="chat-container" class="chat-container">
+                        <div class="chat-messages" id="chat-messages">
+                            <div class="message system-message">
+                                <div class="message-content">
+                                    <div class="message-header">
+                                        <span class="message-sender">SYSTEM</span>
+                                        <span class="message-time"></span>
+                                    </div>
+                                    <div class="message-text">
+                                        Neural interface initialized. Cyberpunk AI Assistant online.
+                                        Ready for queries and code assistance.
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="chat-input-container">
+                            <div class="input-group">
+                                <input type="text" id="chat-input" placeholder="Enter your command or query..." maxlength="2000">
+                                <button id="send-btn" class="send-btn">
+                                    <span class="send-icon">⚡</span>
+                                </button>
+                            </div>
+                            <div class="input-hints">
+                                <span class="hint">Press Enter to send • Shift+Enter for new line</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Terminal Panel -->
+            <div class="panel terminal-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title">
+                        <span class="panel-icon">⚡</span>
+                        SYSTEM TERMINAL
+                    </h2>
+                    <div class="panel-controls">
+                        <button id="clear-terminal" class="control-btn">CLEAR</button>
+                        <button id="new-tab" class="control-btn">NEW TAB</button>
+                    </div>
+                </div>
+                
+                <div class="panel-content">
+                    <div class="terminal-container">
+                        <div class="terminal-tabs">
+                            <div class="tab active" data-tab="0">
+                                <span class="tab-title">MAIN</span>
+                                <button class="tab-close">×</button>
+                            </div>
+                        </div>
+                        <div id="terminal" class="terminal-content"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <span class="footer-label">SESSION:</span>
+                    <span id="session-id" class="footer-value">INITIALIZING...</span>
+                </div>
+                <div class="footer-section">
+                    <span class="footer-label">UPTIME:</span>
+                    <span id="uptime" class="footer-value">00:00:00</span>
+                </div>
+                <div class="footer-section">
+                    <span class="footer-label">SECURITY:</span>
+                    <span class="footer-value">192.168.x.x ONLY</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-content">
+            <div class="loading-spinner"></div>
+            <div class="loading-text">INITIALIZING NEURAL INTERFACE...</div>
+        </div>
+    </div>
+
+    <!-- Error Modal -->
+    <div id="error-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>SYSTEM ERROR</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p id="error-message"></p>
+            </div>
+            <div class="modal-footer">
+                <button class="modal-btn" onclick="closeModal()">ACKNOWLEDGE</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/terminal.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ai-chat.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
